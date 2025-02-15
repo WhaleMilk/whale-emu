@@ -1,0 +1,72 @@
+# Notes and Info for Emulation
+
+## Resources
+
+PyBoy breakdown of their emulator: https://github.com/Baekalfen/PyBoy/blob/master/extras/PyBoy.pdf
+OpCode table: https://meganesu.github.io/generate-gb-opcodes/
+Mooneye GB (GB Emu built in Rust; use for reference): https://github.com/Gekkio/mooneye-gb
+
+## Notes
+
+most data in the emulator is going to run in rust u8 or u16
+    (Everything GB does is unsigned except for handful of ops which use two's comp)
+
+Components:
+    CPU
+        Registers (PyBoy 3.3)
+            Register A (Number accumulation & Argument for calls)
+                Most Arithmetic saves result in A
+            Register B-E (Literally whatever)
+                Can be combined across row into 16bit register
+                B & C, D & E
+            Register H & L (Indirect Memory Access)
+                Often combined into 16 bit register
+                Accessing 16bit memory addresses
+                    8-12 cycles for access instead of usual 4 cycle register access
+            Register SP (Stack pointer)
+                16 bits
+            Register PC (Program Counter)
+                16 bits
+            Register F (ALU Flags):
+                Can be set to one of four flags:
+                    Z - Operation resulted in 0 (Bit 7)
+                    N - Operation used subtraction (Bit 6)
+                    H - Operation raised half-carry (Bit 5)
+                    C - Operation raised carry (Bit 4)
+                Lower nibble (Bits 3-0) always 0
+        OP-codes/Op-Code lookup table (PyBoy 3.2 & 3.4.2)
+            512 op codes
+            one 512 array of u8, checking if code is u16 and ofsetting by 256
+        ALUs (PyBoy 3.4.1)
+            Can't overflow
+            Carry (Using flag in register F)
+        Jumps: (PyBoy 3.4.3)
+            Return Adress pushed to stack using CALL
+            Popped using RET (return from call)
+        Interrupts: (PyBoy 3.5)
+            CPU disables further interrupts
+            PC pushed to stack
+            correct Interrupt Vector is run
+            There are 5 of them (NAME - CAUSE - CALL):
+                VBLANK - LCD has drawn frame - 0x40
+                LCDC - LCD controller has changed - 0x48
+                SERIAL - Serial transfer Completed - 0x50
+                TIMER - Timer counter overflows - 0x58
+                HiToLo - User Pressed a button - 0x60
+        Motherboard
+        LCD Screen
+        RAM
+        Cartridge/Rom Booter
+        MBC (Memory Bank controller) (https://gbdev.io/pandocs/MBCs.html)
+
+registers:
+    stores u8 for each
+    when accessing, need to know to access 8bits or 16
+
+
+CPU:
+    new
+    read() -> u16
+    write() -> void
+    check each f flag
+    set each f flag
