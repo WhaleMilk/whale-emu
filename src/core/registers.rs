@@ -25,11 +25,10 @@ pub enum r16 {
     BC,
     DE,
     HL,
-    SP,
-    PC
+    SP
 }
 
-struct registers {
+pub struct registers {
     a: u8,
     f: Flags,
     b: u8,
@@ -43,7 +42,7 @@ struct registers {
 }
 
 impl registers {
-    pub fn new(&mut self) -> registers {
+    pub fn new() -> registers {
         registers {
             a: 0,
             f: Flags::empty(),
@@ -55,6 +54,40 @@ impl registers {
             l: 0,
             sp: 0,
             pc: 0
+        }
+    }
+
+    fn read16(&self, reg: r16) -> u16 {
+        use self::r16::*;
+        match reg {
+            SP => self.sp,
+            AF => ((self.a as u16) << 8) | (self.f.bits() as u16),
+            BC => ((self.b as u16) << 8) | (self.c as u16),
+            DE => ((self.d as u16) << 8) | (self.e as u16),
+            HL => ((self.h as u16) << 8) | (self.l as u16),
+        }
+    }
+
+    fn write16(&mut self, reg: r16, val: u16) {
+        use self::r16::*;
+        match reg{
+            SP => self.sp = val,
+            AF => {
+                self.a = (val >> 8) as u8;
+                self.f = Flags::from_bits_truncate(val as u8)
+            },
+            BC => {
+                self.b = (val >> 8) as u8;
+                self.c = (val) as u8;
+            },
+            DE => {
+                self.d = (val >> 8) as u8;
+                self.e = val as u8;
+            },
+            HL => {
+                self.h = (val >> 8) as u8;
+                self.l = val as u8;
+            }
         }
     }
 
