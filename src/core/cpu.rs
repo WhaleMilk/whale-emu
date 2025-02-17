@@ -26,8 +26,11 @@ impl Cpu {
         }
     }
 
+    pub fn get_regPage(&self) -> &registers {
+        return &self.reg_page;
+    }
+
     pub fn cpuStep(&mut self) {
-        //read instruction from self
-        // 
+        
     }
 }

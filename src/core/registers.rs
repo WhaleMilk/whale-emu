@@ -57,18 +57,18 @@ impl registers {
         }
     }
 
-    fn read16(&self, reg: r16) -> u16 {
+    pub fn read16(&self, reg: r16) -> u16 {
         use self::r16::*;
         match reg {
             SP => self.sp,
-            AF => ((self.a as u16) << 8) | (self.f.bits() as u16),
-            BC => ((self.b as u16) << 8) | (self.c as u16),
+            AF => ((self.a as u16) << 8) | (self.f.bits() as u16), 
+            BC => ((self.b as u16) << 8) | (self.c as u16),          
             DE => ((self.d as u16) << 8) | (self.e as u16),
             HL => ((self.h as u16) << 8) | (self.l as u16),
         }
     }
 
-    fn write16(&mut self, reg: r16, val: u16) {
+    pub fn write16(&mut self, reg: r16, val: u16) {
         use self::r16::*;
         match reg{
             SP => self.sp = val,
