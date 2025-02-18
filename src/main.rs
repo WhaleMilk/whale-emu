@@ -1,6 +1,3 @@
-mod core;
-
-
 //loads rom 
 //passes that rom into memory
 //creates cpu
