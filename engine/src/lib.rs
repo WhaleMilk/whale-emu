@@ -1,5 +1,4 @@
-mod cpu;
-
+pub mod cpu;
 pub enum Inputs {
     Right,
     Left,

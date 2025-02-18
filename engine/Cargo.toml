@@ -3,5 +3,9 @@ name = "engine"
 version = "0.1.0"
 edition = "2021"
 
+[lib]
+name = "whale_emu"
+path = "src/lib.rs"
+
 [dependencies]
 bitflags = "2.8.0"

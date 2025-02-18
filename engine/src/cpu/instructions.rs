@@ -1,9 +1,37 @@
 use crate::cpu::Cpu;
-use crate::cpu::register_page::r16;
-
-use super::register_page;
+use crate::cpu::register_page::{r16, r8};
 
 impl Cpu {
+    pub fn ld_from_addr(&mut self, to: r8, from: r16, inc: bool, dec: bool) {
+        let addr = self.reg_page.read16(from);
+        let val = self.bus.read_byte(addr);
+        self.write(to, val);
+        //increment
+    }
+
+    pub fn ld_from_imm16(&mut self, to: r16) {
+        let val = self.get_immediate_16();
+        self.reg_page.write16(to, val);
+    }
+
+    pub fn ld_to_addr(&mut self, to: r16, data: r8, inc: bool, dec: bool) {
+        let d = self.read(data);
+        let a = self.reg_page.read16(to);
+        self.bus.write_byte(a, d);
+        //increment
+    }
+
+    pub fn inc16(&mut self, reg: r16) {
+        let val = self.reg_page.read16(reg.clone()).wrapping_add(1);
+        self.reg_page.write16(reg, val);
+    }
+
+    pub fn and(&mut self, reg1: r8, reg2: r8) {
+        self.reg_page.a = self.read(reg1) & self.read(reg2);
+    }
+
+
+
     pub fn add(&mut self, val: u8) {
         let (new_value, overflow) = self.get_regPage().a.overflowing_add(val);
         let hc = ((self.get_regPage().a & 0xF) + (val & 0xF)) > 0xF;
@@ -24,30 +52,5 @@ impl Cpu {
         page.set_c(v1 > 0xffff - v2);
         //page.set_h(); figure this out later
         page.write16(to, new_value);
-    }
-
-    //pub fn LOAD()
-
-    pub fn execute(&mut self, byte: u8) {
-        match byte {
-            0x00 => (),
-            0x01 => (),
-            0x02 => (), 
-            0x03 => (),
-            0x04 => (),
-            0x05 => (),
-            0x06 => (),
-            0x07 => (),
-            0x08 => (),
-            0x09 => self.add16(r16::BC, r16::HL),
-            0x0A..0x19 => (),
-            0x19 => self.add16(r16::DE, r16::HL),
-            0x1A..0x29 => (),
-            0x29 => self.add16(r16::HL, r16::HL),
-            0x2A..0x39 => (),
-            0x39 => self.add16(r16::SP, r16::HL),
-            0x3A..=u8::MAX => (),
-            _ => (),
-        }
     }
 }
