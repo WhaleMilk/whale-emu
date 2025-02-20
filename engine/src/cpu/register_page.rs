@@ -9,6 +9,7 @@ bitflags! (
     }
 );
 
+#[derive(Clone)]
 pub enum r8 {
     A,
     B,

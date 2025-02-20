@@ -53,7 +53,7 @@ impl Cpu {
         Cpu {
             reg_page: RegisterPage::new(),
             bus: MemoryBus::new(),
-            op_code: 0x00
+            op_code: 0x0
         }
     }
 
